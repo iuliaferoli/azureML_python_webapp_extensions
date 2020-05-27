@@ -7,9 +7,10 @@ Read this for overview of project.
 
 See the `Runthrough example.md` if you want to just get started with exploring the code. 
 
-Check () blog for the Azure deployments.
+Check () blog for the Azure deployments (with steps and Azure portal screenshots)
 
 ### The purpose of this project
+
 * Create a way to automate the creation & management of a data science environment in AzureML
 * Put all these functionalities (for example making a new environment for a new project or team, registering new datasets in it) in container(s) that can be triggered or run from one point of control 
 
@@ -36,8 +37,6 @@ Check () blog for the Azure deployments.
 * Azure Data Factory if you want to trigger the HTTP requests to the web app from here (another service like Postman is also possible)
 * For making this solution secure we will use Azure authorization and authentication concepts: Service Principal, Key Vault, Managed Identity, AAD. 
 
-## ! In this readme I will explain how to use the code in the repository. If you want to replicate this solution in Azure, the instructions for deploying all the resources and setting everything up in your subscription is separated in a medium blog here (). (with a lot more screenshots of the Azure portal that didn't fit in this readme)
-
 # Solution architecture / Data flow
 
 ![Solution Architecture](https://github.com/iuliaferoli/azureML_python_webapp_extensions/blob/master/images/architecture.PNG?raw=true)
@@ -49,82 +48,87 @@ Check () blog for the Azure deployments.
 
 
 # Installation / Running this code
-## You can use this code in flexible ways - take the register_data.py and use that code locally or in a Notebook, VM, etc and it will do the job. Or run the flask app from app_body.py locally and that will do the job. Or deploy the web app on Azure. It's an incremental approach - choose what fits best for your need.
 
-0. Azure Resources
+You can use this code in flexible ways - take the register_data.py and use that code locally or in a Notebook, VM, etc and it will do the job. Or run the flask app from app_body.py locally and that will do the job. Or deploy the web app on Azure. It's an incremental approach - choose what fits best for your need.
 
-    This project is meant to automate a task that you can already do via the Azure user interface / portal. In order for this code to run for you, you need to first deploy the necessary resources in your Azure subscription, and to give the necessary access for these resources. For example deploying the different azureML workspaces you want your data registered in, deploying the data lake or blob storage with the data you want registered somewhere, and setting up everything needed for permissions and secuity.
+### 0. Azure Resources
 
-    The explanation on how to set up everything in your Azure subscription is explained in detail on my blog here (to keep this descrition exclusively on how to use the code in the repository). The (summarized) steps for this are:
+The explanation on how to set up everything in your Azure subscription is explained in detail on my blog here. The (summarized) steps for this are:
 
-    1. Deploy (if you don't already have): 1+ AzureML workspace(s), 1+ data lake(s) or blob storage(s) with 1+ container(s) and at least one file in it.
-    2. Create a service principal app registered on your AAD that will allow authentication to your azureML resource and give it "blob owner" access to your storage.
-    3. Store your service principal credentials in your Key Vault (and save these credentials to insert in the code!)    
-    4. Deploy: A web service to host your app, an Azure Data Factory instance to send requests to your web app
-    5. Set up the managed identities for the web app and ADF in your AAD and set up the right authorizations; and authentication with AAD for your web app
+1. Deploy (if you don't already have):
+    * 1+ AzureML workspace(s), 
+    * 1+ data lake(s) or blob storage(s) 
+    * with 1+ container(s) and at least one file in it.
+2. Create a service principal app registered on your AAD that will allow authentication to your azureML resource and give it "blob owner" access to your storage.
+3. Store your service principal credentials in your Key Vault (and save these credentials to insert in the code!)    
+4. Deploy: 
+    * A web service to host your app, 
+    * an Azure Data Factory instance to send requests to your web app
+5. Set up the managed identities for the web app and ADF in your AAD and set up the right authorizations; and authentication with AAD for your web app
 
-1.  Install the requirements.txt in your coding environment. 
+### 1.  Install the requirements.txt in your coding environment. 
 
     >  pip install -r requirements.txt
 
-2. Run the code locally & Fill in missing details
-    You can now use the `register_data.py` Python script. You can use each function individually or run the main function to execute all the steps. You must format the input as a python dictionary containing the informaiton about your workspaces, datastores, and datasets. (In the later stages you will see the input you use is a json file that is sent via HTTP request. This json is parsed into a python dictionary in the `app_body.py` code as well)
+### 2. Run the code locally & Fill in missing details
+   * The main function is in the `register_data.py` Python script. 
+   * The flask wrapper that uses the same function is in `app_body.py`
+           
+   See `code_logic.md` for detailed code breakdown and how to structure you input and function calls.
+
+   Besides this input you also need to fill in the names and link to your key vault so that the code can connect to the service principal. Those variables need to be inputted in this part of the code in the `register_data.py` code:
+
+   ![Service Principal fill in](https://github.com/iuliaferoli/azureML_python_webapp_extensions/blob/master/images/sp_fill_in.PNG?raw=true)
+
+   (The blog explains the creation of the key vault and storing the service principal credentials in there more clearly.)
+
+### 3. (optional) Run the code as a web application locally
+
+   The contents of the `app` folder are what needs to be packaged as a web app.
     
-    The code can be run from your local environment, VM, notebook, etc. 
-    
-    See `code_logic.md` for detailed code breakdown.
+   You can also run this locally (for example for testing before you deploy the web app) (see https://flask.palletsprojects.com/en/1.1.x/cli/) by running these commands in powershell (in the app folder):
+   ```
+   $env:FLASK_APP = "app_body"
+   flask run
+   ```
 
-    Besides this input you also need to fill in the names and link to your key vault so that the code can connect to the service principal. Those variables need to be inputted in this part of the code in the `register_data.py` code:
+   This will give you the link to where your app runs locally. You can use a tool like Postman to send post requests to this. 
 
-    ![Service Principal fill in](https://github.com/iuliaferoli/azureML_python_webapp_extensions/blob/master/images/sp_fill_in.PNG?raw=true)
+### 4. Deploy the code to an Azure Web App
+   In order to access the registration service online / for your team members / not to keep the flask app running locally; you can now deploy your app to Azure. 
 
-    (The blog explains the creation of the key vault and storing the service principal credentials in there more clearly.)
+   * Simplest would be to use the Azure Visual Studio Code plugin for App Services. Here's a tutorial: https://docs.microsoft.com/en-us/azure/developer/python/tutorial-deploy-app-service-on-linux-01 
 
-3. (optional) Run the code as a web application locally
+   * If you don't develop in visual studio code you can also create the Web App wihtout using the IDE. Here's the tutorial: https://docs.microsoft.com/en-us/azure/app-service/containers/quickstart-python?tabs=bash 
 
-    The contents of the "app" folder are what needs to be packaged as a web app. Here you have the additional flask python file. 
-    You can also run this locally (for example for testing before you deploy the web app) (see https://flask.palletsprojects.com/en/1.1.x/cli/) by running these commands in powershell (in the app folder):
-    > $env:FLASK_APP = "app_body"
+   * Now the app is accessible via the link you'll find in the resource overview in your Azure Portal. It will have the same functionality as running the flask app locally, and you can now send requests to the new website. You can still use postman for this, or an ADF web activity like so: https://docs.microsoft.com/en-us/azure/data-factory/control-flow-web-activity 
 
-    > flask run
+   ![ADF Example](https://github.com/iuliaferoli/azureML_python_webapp_extensions/blob/master/images/data_factory.PNG?raw=true)
 
-    This will give you the link to where your app runs locally. You can use a tool like postman to send post requests to this. 
+### 5. Set up security & authentication on Azure
 
-4. Deploy the code to an Azure Web App
-    In order to access the registration service online / for your team members / not to keep the flask app running locally; you can now deploy your app to Azure. 
+   Desired scenario: you whitelist the services or people that can access and make requests to your web app, for example only your security officer or data owner may send requests for a certain dataset to be registered in a workspace. 
 
-    Simplest would be to use the Azure Visual Studio Code plugin for App Services. Here's a tutorial: https://docs.microsoft.com/en-us/azure/developer/python/tutorial-deploy-app-service-on-linux-01 
+   My colleague Rene Bremer made a great tutorial for this (in his example he uses an Azure Function instead of a Web App but every step is the same with the web app as well.) 
 
-    If you don't develop in visual studio code you can also create the Web App wihtout using the IDE. Here's the tutorial: https://docs.microsoft.com/en-us/azure/app-service/containers/quickstart-python?tabs=bash 
+   This is what the authentication & authorization architecture looks like:
 
-    Now the app is accessible via the link you'll find in the resource overview in your Azure Portal. Will have the same functionality as running the flask app locally, and you can now send requests to the new website. You can still use postman for this, or an ADF web activity like so: https://docs.microsoft.com/en-us/azure/data-factory/control-flow-web-activity 
+   ![Security Architecture](https://github.com/iuliaferoli/azureML_python_webapp_extensions/blob/master/images/security_Rene_Bremer.png?raw=true)
 
-    ![ADF Example](https://github.com/iuliaferoli/azureML_python_webapp_extensions/blob/master/images/data_factory.PNG?raw=true)
+   Tutorial for setting this up here: https://github.com/rebremer/managed_identity_authentication 
 
-5. Set up security & authentication on Azure
-
-    Desired scenario: you whitelist the services or people that can access and make requests to your web app, for example only your security officer or data owner may send requests for a certain dataset to be registered in a workspace. 
-
-    My colleague Rene Bremer made a great tutorial for this (in his example he uses an Azure Function instead of a Web App but every step is the same with the web app as well.) 
-
-    This is what the authentication & authorization architecture looks like:
-
-    ![Security Architecture](https://github.com/iuliaferoli/azureML_python_webapp_extensions/blob/master/images/security_Rene_Bremer.png?raw=true)
-
-    Tutorial for setting this up here: https://github.com/rebremer/managed_identity_authentication 
-
-    Additional to this tutorial we set up authorizations for AzureML as well. Currently AzureML doesn't support managed identity, so this is why we use the service principal authentication instead. 
-    AzureML doesn’t support MSI at the moment, so we implement a service principal where we can still regulate authorizations
+   * Additional to this tutorial we set up authorizations for AzureML as well. Currently AzureML doesn't support managed identity, so this is why we use the service principal authentication instead. 
+   * AzureML doesn’t support MSI at the moment, so we implement a service principal where we can still regulate authorizations
    
-    1. Service principal to access azureML workspaces
-    2. Service principal for azureML library to access datalake
+   1. Service principal to access azureML workspaces
+   2. Service principal for azureML library to access datalake
 
-    3. Storing secrets in key vault for all credentials
+   3. Storing secrets in key vault for all credentials
 
-        A. Key vault to store service principal, data lake and azureML secrets
+       A. Key vault to store service principal, data lake and azureML secrets
 
-        B. Managed identity for the webapp to access key vault
+       B. Managed identity for the webapp to access key vault
 
 
 
-    ![Other security](https://github.com/iuliaferoli/azureML_python_webapp_extensions/blob/master/images/security_azureml.PNG?raw=true)
+   ![Other security](https://github.com/iuliaferoli/azureML_python_webapp_extensions/blob/master/images/security_azureml.PNG?raw=true)
