@@ -1,5 +1,14 @@
 # AzureML python SDK WebApp extensions
 # Introduction 
+
+This code can be used to automatically register datasets & datastores into Azure Machine Learning at scale. 
+
+Read this for overview of project.
+
+See the `Runthrough example.md` if you want to just get started with exploring the code. 
+
+Check () blog for the Azure deployments.
+
 ### The purpose of this project
 * Create a way to automate the creation & management of a data science environment in AzureML
 * Put all these functionalities (for example making a new environment for a new project or team, registering new datasets in it) in container(s) that can be triggered or run from one point of control 
