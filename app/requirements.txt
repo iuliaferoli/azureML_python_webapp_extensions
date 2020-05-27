@@ -1,0 +1,7 @@
+Flask==1.1.1
+azureml-core
+azureml.dataprep
+azure-keyvault-secrets 
+azure-keyvault-keys
+azure-keyvault-certificates
+azure-identity
