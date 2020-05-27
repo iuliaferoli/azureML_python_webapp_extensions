@@ -1,0 +1,35 @@
+{
+    "workspace_definition" : [{
+        "workspace_name" : "ml-ws-1",
+        "subscription_id" : "YOUR AZURE subscription_id HERE",
+        "resource_group" : "test"
+        },
+        {
+        "workspace_name" : "ml-ws-2",
+        "subscription_id" : "YOUR AZURE subscription_id HERE",
+        "resource_group" : "est"
+        },
+        {
+        "workspace_name" : "ml-ws-3-us",
+        "subscription_id" : "YOUR AZURE subscription_id HERE",
+        "resource_group" : "test-us"
+        }],
+    "datastore_definition" : [{
+        "adlsgen2_datastore_name" : "silver",
+        "account_name" : "sourcedata",
+        "filesystem" : "silver"
+        }],
+        
+    "dataset_definition" : [{
+        "dataset_name" : "accounting_dataset",
+        "dataset_path" : "accounting/accounting_data.csv"
+        },
+        {
+        "dataset_name" : "devlieries_dataset",
+        "dataset_path" : "deliveries/deliveries_data.csv"
+        },
+        {
+        "dataset_name" : "sales_dataset",
+        "dataset_path" : "sales/sales_data.csv"
+        }]
+}
