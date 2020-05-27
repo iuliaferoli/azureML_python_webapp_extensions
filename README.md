@@ -71,12 +71,12 @@ The explanation on how to set up everything in your Azure subscription is explai
     >  pip install -r requirements.txt
 
 ### 2. Run the code locally & Fill in missing details
-   * The main function is in the `register_data.py` Python script. 
-   * The flask wrapper that uses the same function is in `app_body.py`
+   * The main function is in the [`register_data.py`](https://github.com/iuliaferoli/azureML_python_webapp_extensions/blob/master/app/register_data.py) Python script. 
+   * The flask wrapper that uses the same function is in [`app_body.py`](https://github.com/iuliaferoli/azureML_python_webapp_extensions/blob/master/app/app_body.py)
            
-   See `code_logic.md` for detailed code breakdown and how to structure you input and function calls.
+   See [`Runthrough example.md`](https://github.com/iuliaferoli/azureML_python_webapp_extensions/blob/master/Runthrough%20example.md)  for detailed code breakdown and how to structure you input and function calls.
 
-   Besides this input you also need to fill in the names and link to your key vault so that the code can connect to the service principal. Those variables need to be inputted in this part of the code in the `register_data.py` code:
+   Besides this input you also need to fill in the names and link to your key vault so that the code can connect to the service principal. Those variables need to be inputted in this part of the code in the [`register_data.py`](https://github.com/iuliaferoli/azureML_python_webapp_extensions/blob/master/app/register_data.py) code:
 
    ![Service Principal fill in](https://github.com/iuliaferoli/azureML_python_webapp_extensions/blob/master/images/sp_fill_in.PNG?raw=true)
 
@@ -86,7 +86,7 @@ The explanation on how to set up everything in your Azure subscription is explai
 
    The contents of the `app` folder are what needs to be packaged as a web app.
     
-   You can also run this locally (for example for testing before you deploy the web app) (see https://flask.palletsprojects.com/en/1.1.x/cli/) by running these commands in powershell (in the app folder):
+   You can also run this locally (for example for testing before you deploy the web app) (see [flask tutorial](https://flask.palletsprojects.com/en/1.1.x/cli/)) by running these commands in powershell (in the app folder):
    ```
    $env:FLASK_APP = "app_body"
    flask run
@@ -97,11 +97,11 @@ The explanation on how to set up everything in your Azure subscription is explai
 ### 4. Deploy the code to an Azure Web App
    In order to access the registration service online / for your team members / not to keep the flask app running locally; you can now deploy your app to Azure. 
 
-   * Simplest would be to use the Azure Visual Studio Code plugin for App Services. Here's a tutorial: https://docs.microsoft.com/en-us/azure/developer/python/tutorial-deploy-app-service-on-linux-01 
+   * Simplest would be to use the Azure Visual Studio Code plugin for App Services. [Here](https://docs.microsoft.com/en-us/azure/developer/python/tutorial-deploy-app-service-on-linux-01) is a tutorial. 
 
-   * If you don't develop in visual studio code you can also create the Web App wihtout using the IDE. Here's the tutorial: https://docs.microsoft.com/en-us/azure/app-service/containers/quickstart-python?tabs=bash 
+   * If you don't develop in visual studio code you can also create the Web App wihtout using the IDE. [Here](https://docs.microsoft.com/en-us/azure/app-service/containers/quickstart-python?tabs=bash ) is a tutorial.
 
-   * Now the app is accessible via the link you'll find in the resource overview in your Azure Portal. It will have the same functionality as running the flask app locally, and you can now send requests to the new website. You can still use postman for this, or an ADF web activity like so: https://docs.microsoft.com/en-us/azure/data-factory/control-flow-web-activity 
+   * Now the app is accessible via the link you'll find in the resource overview in your Azure Portal. It will have the same functionality as running the flask app locally, and you can now send requests to the new website. You can still use postman for this, or an [ADF web activity](https://docs.microsoft.com/en-us/azure/data-factory/control-flow-web-activity) like so:  
 
    ![ADF Example](https://github.com/iuliaferoli/azureML_python_webapp_extensions/blob/master/images/data_factory.PNG?raw=true)
 
@@ -115,7 +115,7 @@ The explanation on how to set up everything in your Azure subscription is explai
 
    ![Security Architecture](https://github.com/iuliaferoli/azureML_python_webapp_extensions/blob/master/images/security_Rene_Bremer.png?raw=true)
 
-   Tutorial for setting this up here: https://github.com/rebremer/managed_identity_authentication 
+   * [Here](https://github.com/rebremer/managed_identity_authentication) is a tutorial for setting this up.
 
    * Additional to this tutorial we set up authorizations for AzureML as well. Currently AzureML doesn't support managed identity, so this is why we use the service principal authentication instead. 
    * AzureML doesn’t support MSI at the moment, so we implement a service principal where we can still regulate authorizations
