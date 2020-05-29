@@ -7,8 +7,7 @@ Read this for overview of the python project.
 
 See the `Runthrough example.md` if you want to just get started with exploring the code. 
 
-Check [Medium blog](https://medium.com/@iuliaferoli/automatic-data-registration-for-azure-machine-learning-workspaces
-) for the Azure deployments (with steps and Azure portal screenshots)
+Check [Medium blog](https://medium.com/@iuliaferoli/automatic-data-registration-for-azure-machine-learning-workspaces-65beb7d81521) for the Azure deployments (with steps and Azure portal screenshots)
 
 ### The purpose of this project
 
@@ -27,7 +26,7 @@ Check [Medium blog](https://medium.com/@iuliaferoli/automatic-data-registration-
 * Python and the AzureML-SDK
 * Flask for adapting the python script to run as a web service
 
- AZURE SERVICES (described in the blog [here](https://medium.com/@iuliaferoli/automatic-data-registration-for-azure-machine-learning-workspaces
+ AZURE SERVICES (described in the blog [here](https://medium.com/@iuliaferoli/automatic-data-registration-for-azure-machine-learning-workspaces-65beb7d81521
 ))
 
 * Azure Web service (Azure Functions also possible) to containerize the code 
