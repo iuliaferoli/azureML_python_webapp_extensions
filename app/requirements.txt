@@ -1,4 +1,4 @@
-Flask==1.1.1
+Flask==2.3.2
 azureml-core
 azureml.dataprep==1.6.2
 azure-keyvault-secrets 
